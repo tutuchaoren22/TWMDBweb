@@ -8,6 +8,8 @@ import org.springframework.data.relational.core.mapping.Table;
 public class Movie {
     @Id
     private int id;
+    @Column("movie_id")
+    private String movieId;
     private String alt;
     private int year;
     private String title;
@@ -22,8 +24,9 @@ public class Movie {
     public Movie() {
     }
 
-    public Movie(int id, String alt, int year, String title, double rating, String originalTitle, String directors, String casts, String genres, String image) {
+    public Movie(int id, String movieId, String alt, int year, String title, double rating, String originalTitle, String directors, String casts, String genres, String image) {
         this.id = id;
+        this.movieId = movieId;
         this.alt = alt;
         this.year = year;
         this.title = title;
@@ -41,6 +44,14 @@ public class Movie {
 
     public void setId(int id) {
         this.id = id;
+    }
+
+    public String getMovieId() {
+        return movieId;
+    }
+
+    public void setMovieId(String movieId) {
+        this.movieId = movieId;
     }
 
     public String getAlt() {
@@ -119,6 +130,7 @@ public class Movie {
     public String toString() {
         return "Movie{" +
                 "id=" + id +
+                ", movieId='" + movieId + '\'' +
                 ", alt='" + alt + '\'' +
                 ", year=" + year +
                 ", title='" + title + '\'' +
