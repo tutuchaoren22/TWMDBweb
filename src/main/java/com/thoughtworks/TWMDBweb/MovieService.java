@@ -1,9 +1,9 @@
 package com.thoughtworks.TWMDBweb;
 
 import org.springframework.stereotype.Service;
-import org.springframework.web.bind.annotation.RequestBody;
 
-import javax.websocket.server.PathParam;
+import java.util.ArrayList;
+import java.util.List;
 
 @Service
 public class MovieService {
@@ -13,24 +13,38 @@ public class MovieService {
         this.movieRepository = movieRepository;
     }
 
-    //返回所有电影列表信息
-    public void getAllMovies(String start, String end) {
-
+    public List<Movie> getAllMovies(int start, int end) {
+        return movieRepository.getAllMovies(start, end);
     }
 
-    //返回所有电影分类信息
-    public void getAllClassifiedMovies() {
-
+    public List<MovieCategories> getAllClassifiedMovies() {
+        List<String> allCategories = getAllCategories();
+        List<MovieCategories> allClassifiedMovies = new ArrayList<>();
+        for (String category : allCategories) {
+            allClassifiedMovies.add(new MovieCategories(category, getMoviesForCategory(category, 1, 250).size()));
+        }
+        return allClassifiedMovies;
     }
 
-    //返回给定分类下的电影信息
-    public void getMoviesForCategory(String category, String start, String end) {
-
+    public List<String> getAllCategories() {
+        List<Movie> allMovies = getAllMovies(1, 250);
+        List<String> allCategories = new ArrayList<>();
+        for (Movie movie : allMovies) {
+            for (String genre : movie.getGenres().split(",")) {
+                if (!allCategories.contains(genre)) {
+                    allCategories.add(genre);
+                }
+            }
+        }
+        return allCategories;
     }
 
-    //根据用户输入搜索相关电影信息
-    public void searchMoviesForInput(String text) {
+    public List<Movie> getMoviesForCategory(String category, int start, int end) {
+        return movieRepository.getMoviesForCategory(category, start, end);
+    }
 
+    public List<Movie> searchMoviesForInput(String text) {
+        return movieRepository.searchMoviesForInput(text);
     }
 
     //根据电影id返回单个电影详情信息
