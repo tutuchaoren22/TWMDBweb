@@ -27,7 +27,6 @@ function run() {
     renderMovieListInInterval(movieListToRender, movieRenderProgressIndex, (movieRenderProgressIndex += movieRenderInterval) - 1);
     dataLoadedflag = true;
   });
-
 }
 
 function onInterfaceClick(event) {
@@ -82,12 +81,15 @@ function findCatagoryBox(target) {
 }
 
 function selectCatagoryHandle(catagoryBoxEl) {
-  let catagorySelected = catagoryBoxEl.firstElementChild.textContent;
+  currentCategory = catagoryBoxEl.firstElementChild.textContent;
   highlightCatagoryBox(catagoryBoxEl);
   removeMovies();
   movieRenderProgressIndex = 1;
-  movieListToRender = findMoviesOfCatagory(classificationDb, catagorySelected);
-  renderMovieListInInterval(movieListToRender, movieRenderProgressIndex, (movieRenderProgressIndex += movieRenderInterval) - 1);
+  movieCollectProgressIndex = 1;
+  getMoviesOfCategory(currentCategory, movieCollectProgressIndex, (movieCollectProgressIndex + movieCollectInitLength) - 1).then(result => {
+    movieListToRender = result;
+    renderMovieListInInterval(movieListToRender, movieRenderProgressIndex, (movieRenderProgressIndex += movieRenderInterval) - 1);
+  });
 }
 
 function sortCatagoryByMovieCount(catagoryObjList) {
@@ -212,6 +214,10 @@ window.onscroll = function () {
           getAllMoviesBetween(movieCollectProgressIndex, (movieCollectProgressIndex += movieRenderInterval) - 1).then(movieList => {
             movieListToRender = movieListToRender.concat(movieList);
           });
+        } else {
+          getMoviesOfCategory(currentCategory, movieCollectProgressIndex, (movieCollectProgressIndex += movieRenderInterval) - 1).then(movieList => {
+            movieListToRender = movieListToRender.concat(movieList);
+          });
         }
         renderMovieListInInterval(movieListToRender, movieRenderProgressIndex, (movieRenderProgressIndex += movieRenderInterval) - 1);
       }
@@ -247,6 +253,19 @@ function getAllMoviesBetween(start, end) {
   return new Promise(function (resolve, reject) {
     let AJAXSetup = {
       url: 'http://localhost:8080/api/all?start=' + start + '&end=' + end,
+      method: 'GET',
+      success: function (result) {
+        resolve(result);
+      }
+    };
+    AJAXHandle(AJAXSetup);
+  });
+}
+
+function getMoviesOfCategory(category, start, end) {
+  return new Promise(function (resolve, reject) {
+    let AJAXSetup = {
+      url: 'http://localhost:8080/api/category?category=' + category + '&start=' + start + '&end=' + end,
       method: 'GET',
       success: function (result) {
         resolve(result);
