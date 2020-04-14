@@ -1,5 +1,8 @@
-package com.thoughtworks.TWMDBweb;
+package com.thoughtworks.TWMDBweb.controllers;
 
+import com.thoughtworks.TWMDBweb.entities.Movie;
+import com.thoughtworks.TWMDBweb.entities.MovieCategories;
+import com.thoughtworks.TWMDBweb.services.MovieService;
 import org.springframework.web.bind.annotation.*;
 
 import javax.websocket.server.PathParam;

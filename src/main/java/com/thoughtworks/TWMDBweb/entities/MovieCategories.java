@@ -1,4 +1,4 @@
-package com.thoughtworks.TWMDBweb;
+package com.thoughtworks.TWMDBweb.entities;
 
 public class MovieCategories {
     private String name;

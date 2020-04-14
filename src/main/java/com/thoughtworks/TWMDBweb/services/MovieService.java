@@ -1,6 +1,9 @@
-package com.thoughtworks.TWMDBweb;
+package com.thoughtworks.TWMDBweb.services;
 
 import com.alibaba.fastjson.JSONObject;
+import com.thoughtworks.TWMDBweb.entities.Movie;
+import com.thoughtworks.TWMDBweb.entities.MovieCategories;
+import com.thoughtworks.TWMDBweb.repositories.MovieRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpMethod;
 import org.springframework.http.ResponseEntity;

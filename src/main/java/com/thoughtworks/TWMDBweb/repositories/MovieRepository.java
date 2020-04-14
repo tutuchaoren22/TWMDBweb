@@ -1,5 +1,6 @@
-package com.thoughtworks.TWMDBweb;
+package com.thoughtworks.TWMDBweb.repositories;
 
+import com.thoughtworks.TWMDBweb.entities.Movie;
 import org.springframework.data.jdbc.repository.query.Modifying;
 import org.springframework.data.jdbc.repository.query.Query;
 import org.springframework.data.repository.CrudRepository;
