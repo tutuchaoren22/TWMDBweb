@@ -20,11 +20,12 @@ public class Movie {
     private String casts;
     private String genres;
     private String image;
+    private String summary;
 
     public Movie() {
     }
 
-    public Movie(int id, String movieId, String alt, int year, String title, double rating, String originalTitle, String directors, String casts, String genres, String image) {
+    public Movie(int id, String movieId, String alt, int year, String title, double rating, String originalTitle, String directors, String casts, String genres, String image, String summary) {
         this.id = id;
         this.movieId = movieId;
         this.alt = alt;
@@ -36,6 +37,7 @@ public class Movie {
         this.casts = casts;
         this.genres = genres;
         this.image = image;
+        this.summary = summary;
     }
 
     public int getId() {
@@ -124,6 +126,14 @@ public class Movie {
 
     public void setImage(String image) {
         this.image = image;
+    }
+
+    public String getSummary() {
+        return summary;
+    }
+
+    public void setSummary(String summary) {
+        this.summary = summary;
     }
 
     @Override
