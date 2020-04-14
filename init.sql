@@ -10,3 +10,16 @@ SELECT
     *
 FROM
     movies;
+
+CREATE TABLE movie_comments (
+    id INT PRIMARY KEY AUTO_INCREMENT,
+    movie_id INT,
+    author_name VARCHAR(50),
+    rating DOUBLE,
+    comment_date DATE,
+    comments TEXT
+)  ENGINE=INNODB DEFAULT CHARSET=UTF8;
+SELECT
+    *
+FROM
+    movie_comments;
