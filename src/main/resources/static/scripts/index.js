@@ -6,14 +6,21 @@ let movieListToRender;
 let movieRenderProgressIndex = 1;
 const movieRenderInterval = 20;
 
-initDb(() => {
-  classificationDb = readDbClassification();
-  movieDb = readOnServiceDb();
-  renderAllCatagorys();
-  movieListToRender = findMoviesIds(movieDb);
-  renderMovieListInInterval(movieListToRender, movieRenderProgressIndex, movieRenderProgressIndex + movieRenderInterval - 1);
-  dataLoadedflag = true;
-});
+
+// initDb(() => {
+//   classificationDb = readDbClassification();
+//   movieDb = readOnServiceDb();
+//   renderAllCatagorys();
+//   movieListToRender = findMoviesIds(movieDb);
+//   renderMovieListInInterval(movieListToRender, movieRenderProgressIndex, movieRenderProgressIndex + movieRenderInterval - 1);
+//   dataLoadedflag = true;
+// });
+
+run();
+
+function run() {
+  getCatagories().then((result) => renderCatagorysFromList(result));
+}
 
 function onInterfaceClick(event) {
   const catagoryBox = 'catagory-box';
@@ -126,7 +133,7 @@ function renderSingleCatagory(catagoryObj) {
   catagoryEl.setAttribute('class', 'catagory-box');
   catagoryEl.innerHTML = `
     <span>${catagoryObj.name}</span>
-    <span>(${catagoryObj.id.length}部)</span>`;
+    <span>(${catagoryObj.count}部)</span>`;
   return catagoryEl;
 }
 
@@ -208,4 +215,17 @@ function keyEnterSearchProject() {
 function searchProject() {
   let inputValue = document.getElementById("search-movie").value;
   window.open(`../pages/searchPage.html?${inputValue}`, '_blank');
+}
+
+function getCatagories() {
+  return new Promise(function (resolve, reject) {
+    let AJAXSetup = {
+      url: 'http://localhost:8080/api/allcategories',
+      method: 'GET',
+      success: function (result) {
+        resolve(result);
+      }
+    };
+    AJAXHandle(AJAXSetup);
+  });
 }
