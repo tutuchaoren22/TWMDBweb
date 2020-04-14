@@ -210,6 +210,7 @@ function keyEnterSearchProject() {
 
 function searchProject() {
   let inputValue = document.getElementById("search-movie").value;
+  if(null !== inputValue && inputValue.length)
   window.open(`../pages/searchPage.html?${inputValue}`, '_blank');
 }
 
