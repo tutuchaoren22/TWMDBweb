@@ -1,31 +1,20 @@
-let classificationDb;
-let movieDb;
-let dataLoadedflag = false;
-let pastHighlightCatagoryBox;
+let dataLoadedFlag = false;
 let movieListToRender;
+let currentCategory = 'all';
 let movieCollectProgressIndex = 1;
 let movieRenderProgressIndex = 1;
 const movieRenderInterval = 20;
 const movieCollectInitLength = 40;
-let currentCategory = 'all';
-
-// initDb(() => {
-//   classificationDb = readDbClassification();
-//   movieDb = readOnServiceDb();
-//   renderAllCatagorys();
-//   movieListToRender = findMoviesIds(movieDb);
-//   renderMovieListInInterval(movieListToRender, movieRenderProgressIndex, movieRenderProgressIndex + movieRenderInterval - 1);
-//   dataLoadedflag = true;
-// });
+let pastHighlightCatagoryBox;
 
 run();
 
 function run() {
-  getCatagories().then(result => renderAllCategorys(result));
+  getCatagories().then(result => renderAllCategroys(result));
   getAllMoviesBetween(movieCollectProgressIndex, (movieCollectProgressIndex += movieCollectInitLength) - 1).then(movieList => {
     movieListToRender = movieList;
     renderMovieListInInterval(movieListToRender, movieRenderProgressIndex, (movieRenderProgressIndex += movieRenderInterval) - 1);
-    dataLoadedflag = true;
+    dataLoadedFlag = true;
   });
 }
 
@@ -42,14 +31,6 @@ function onInterfaceClick(event) {
       onClickBannerImg(event.target);
       break;
   }
-}
-
-function findMoviesIds(movieList) {
-  return movieList.map((movie) => (movie.id));
-}
-
-function findMoviesOfCatagory(catagoryList, catagoryName) {
-  return catagoryList.find((catagory) => (catagoryName === catagory.name)).id;
 }
 
 function highlightCatagoryBox(target) {
@@ -126,7 +107,7 @@ function renderSingleMovie(movieObj) {
   <div class="movie-box">
     <a href="../pages/detailPage.html?${movieObj.movieId}" target="_blank">
       <div class="img-wrap">
-        <img src=${movieObj.image}>
+        <img src=${movieObj.image} alt="电影海报图">
       </div>
       <div class="movie-title">${movieObj.title}</div>
     </a>
@@ -154,12 +135,8 @@ function renderCatagorysFromList(catagoryObjList) {
   })
 }
 
-function renderAllCategorys(data) {
+function renderAllCategroys(data) {
   renderCatagorysFromList(sortCatagoryByMovieCount(data));
-}
-
-function getDataById(database, id) {
-  return database.find((movie) => (id.toString() === movie.id))
 }
 
 function getDocumentTop() {
@@ -203,7 +180,7 @@ function getScrollHeight() {
 
 
 window.onscroll = function () {
-  if (dataLoadedflag) {
+  if (dataLoadedFlag) {
     if (getScrollHeight() < getWindowHeight() + getDocumentTop() + 15) {
       let loadmore = document.getElementsByClassName('loadmore')[0];
       loadmore.innerHTML = '<span class="loading"></span>加载中..';
