@@ -8,6 +8,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.web.client.RestTemplate;
 
 import java.util.ArrayList;
+import java.util.HashSet;
 import java.util.List;
 
 @Service
@@ -18,8 +19,9 @@ public class MovieService {
     @Autowired
     private RestTemplate restTemplate;
 
-    public MovieService(MovieRepository movieRepository) {
+    public MovieService(MovieRepository movieRepository, RestTemplate restTemplate) {
         this.movieRepository = movieRepository;
+        this.restTemplate = restTemplate;
     }
 
     public List<Movie> getAllMovies(int start, int end) {
@@ -53,7 +55,12 @@ public class MovieService {
     }
 
     public List<Movie> searchMoviesForInput(String text) {
-        return movieRepository.searchMoviesForInput(text);
+        String[] wordList = text.split(" ");
+        HashSet<Movie> searchMovies = new HashSet<>();
+        for (String word : wordList) {
+            searchMovies.addAll(movieRepository.searchMoviesForInput(word));
+        }
+        return new ArrayList<>(searchMovies);
     }
 
     public Movie getMovieDetailById(String movieId) {
