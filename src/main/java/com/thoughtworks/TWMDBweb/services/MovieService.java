@@ -21,7 +21,7 @@ import java.util.List;
 
 @Service
 public class MovieService {
-    String API_KEY = "?apikey=0df993c66c0c636e29ecbb5344252a4a";
+    String API_KEY = "apikey=0df993c66c0c636e29ecbb5344252a4a";
     @Autowired
     private final MovieRepository movieRepository;
     @Autowired
@@ -81,7 +81,7 @@ public class MovieService {
     public void addSummaryToTable() {
         List<Integer> idList = movieRepository.getMoviesId();
         for (int id : idList) {
-            String url = "http://api.douban.com/v2/movie/subject/" + id + API_KEY;
+            String url = "http://api.douban.com/v2/movie/subject/" + id + "?" + API_KEY;
             ResponseEntity<String> results = restTemplate.exchange(url, HttpMethod.GET, null, String.class);
             String json = results.getBody();
             JSONObject detail = JSONObject.parseObject(json);
@@ -93,7 +93,7 @@ public class MovieService {
     public void addDurations(){
         List<Integer> idList = movieRepository.getMoviesId();
         for (int id : idList) {
-            String url = "http://api.douban.com/v2/movie/subject/" + id + API_KEY;
+            String url = "http://api.douban.com/v2/movie/subject/" + id + "?" + API_KEY;
             ResponseEntity<String> results = restTemplate.exchange(url, HttpMethod.GET, null, String.class);
             String json = results.getBody();
             JSONObject detail = JSONObject.parseObject(json);
@@ -105,7 +105,7 @@ public class MovieService {
     public void updateMoviePic(){
         List<Integer> idList = movieRepository.getMoviesId();
         for (int id : idList) {
-            String url = "http://api.douban.com/v2/movie/subject/" + id + API_KEY;
+            String url = "http://api.douban.com/v2/movie/subject/" + id + "?" + API_KEY;
             ResponseEntity<String> results = restTemplate.exchange(url, HttpMethod.GET, null, String.class);
             String json = results.getBody();
             JSONObject detail = JSONObject.parseObject(json);
