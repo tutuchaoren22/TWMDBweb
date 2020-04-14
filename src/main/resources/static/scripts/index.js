@@ -19,7 +19,7 @@ const movieRenderInterval = 20;
 run();
 
 function run() {
-  getCatagories().then((result) => renderCatagorysFromList(result));
+  getCatagories().then((result) => renderAllCategorys(result));
 }
 
 function onInterfaceClick(event) {
@@ -84,7 +84,7 @@ function selectCatagoryHandle(catagoryBoxEl) {
 
 function sortCatagoryByMovieCount(catagoryObjList) {
   return catagoryObjList.sort(function (a, b) {
-    return b.id.length - a.id.length;
+    return b.count - a.count;
   });
 }
 
@@ -144,8 +144,8 @@ function renderCatagorysFromList(catagoryObjList) {
   })
 }
 
-function renderAllCatagorys() {
-  renderCatagorysFromList(sortCatagoryByMovieCount(classificationDb));
+function renderAllCategorys(data) {
+  renderCatagorysFromList(sortCatagoryByMovieCount(data));
 }
 
 function getDataById(database, id) {
