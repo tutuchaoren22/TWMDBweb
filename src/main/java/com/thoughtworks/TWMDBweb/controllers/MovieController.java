@@ -46,10 +46,8 @@ public class MovieController {
     @GetMapping("/update")
     public void updateTable() throws ParseException {
         movieService.addSummaryToTable();
-        //movieService.addDurations();
-        //movieService.updateMoviePic();
-        //movieService.addCommentsToTable();
+        movieService.addDurations();
+        movieService.updateMoviePic();
+        movieService.addCommentsToTable();
     }
-
-
 }
