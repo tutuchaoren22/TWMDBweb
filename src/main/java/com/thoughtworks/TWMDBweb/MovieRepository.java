@@ -13,8 +13,8 @@ public interface MovieRepository extends CrudRepository<Movie, Integer> {
     @Query("SELECT * FROM movies WHERE id BETWEEN :start AND :end")
     List<Movie> getAllMovies(@Param("start") int start, @Param("end") int end);
 
-    @Query("SELECT * FROM movies WHERE genres LIKE CONCAT('%',:category,'%') LIMIT :start,:end")
-    List<Movie> getMoviesForCategory(String category, int start, int end);
+    @Query("SELECT * FROM movies WHERE genres LIKE CONCAT('%',:category,'%') LIMIT :start,:len")
+    List<Movie> getMoviesForCategory(@Param("category") String category, @Param("start") int start, @Param("len") int len);
 
     @Query("select * from movies where title LIKE CONCAT('%',:text,'%') ")
     List<Movie> searchMoviesForInput(@Param("text") String text);

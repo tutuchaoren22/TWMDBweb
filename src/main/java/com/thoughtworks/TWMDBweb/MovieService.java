@@ -49,7 +49,7 @@ public class MovieService {
     }
 
     public List<Movie> getMoviesForCategory(String category, int start, int end) {
-        return movieRepository.getMoviesForCategory(category, start, end);
+        return movieRepository.getMoviesForCategory(category, start-1, end-start+1);
     }
 
     public List<Movie> searchMoviesForInput(String text) {
