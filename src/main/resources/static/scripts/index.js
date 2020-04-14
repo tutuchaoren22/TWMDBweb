@@ -1,4 +1,5 @@
 let dataLoadedFlag = false;
+// let movieCollectToEnd = false;
 let movieListToRender;
 let currentCategory = 'all';
 let movieCollectProgressIndex = 1;
@@ -62,6 +63,7 @@ function findCatagoryBox(target) {
 }
 
 function selectCatagoryHandle(catagoryBoxEl) {
+  dataLoadedFlag = false;
   currentCategory = catagoryBoxEl.firstElementChild.textContent;
   highlightCatagoryBox(catagoryBoxEl);
   removeMovies();
@@ -69,6 +71,7 @@ function selectCatagoryHandle(catagoryBoxEl) {
   movieCollectProgressIndex = 1;
   getMoviesOfCategory(currentCategory, movieCollectProgressIndex, (movieCollectProgressIndex + movieCollectInitLength) - 1).then(result => {
     movieListToRender = result;
+    dataLoadedFlag = true;
     renderMovieListInInterval(movieListToRender, movieRenderProgressIndex, (movieRenderProgressIndex += movieRenderInterval) - 1);
   });
 }
@@ -187,7 +190,6 @@ window.onscroll = function () {
       if (getScrollHeight() - 1 <= getWindowHeight() + getDocumentTop()) {
         loadmore.innerHTML = ' ';
         if ('all' == currentCategory) {
-          console.log("here!");
           getAllMoviesBetween(movieCollectProgressIndex, (movieCollectProgressIndex += movieRenderInterval) - 1).then(movieList => {
             movieListToRender = movieListToRender.concat(movieList);
           });
