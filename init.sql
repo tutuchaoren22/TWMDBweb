@@ -4,7 +4,7 @@ ALTER TABLE movies change id movie_id int(11);
 ALTER TABLE movies ADD id INT(5) NOT NULL
     PRIMARY KEY AUTO_INCREMENT FIRST;
 ALTER TABLE movies ADD summary LongTEXT;
-ALTER TABLE movies ADD durations TEXT ;
+ALTER TABLE movies ADD durations TEXT;
 
 SELECT
     *
@@ -19,6 +19,7 @@ CREATE TABLE movie_comments (
     comment_date DATE,
     comments TEXT
 )  ENGINE=INNODB DEFAULT CHARSET=UTF8;
+
 SELECT
     *
 FROM

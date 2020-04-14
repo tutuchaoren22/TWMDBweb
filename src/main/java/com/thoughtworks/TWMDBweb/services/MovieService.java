@@ -1,8 +1,10 @@
 package com.thoughtworks.TWMDBweb.services;
 
+import com.alibaba.fastjson.JSONArray;
 import com.alibaba.fastjson.JSONObject;
 import com.thoughtworks.TWMDBweb.entities.Movie;
 import com.thoughtworks.TWMDBweb.entities.MovieCategories;
+import com.thoughtworks.TWMDBweb.repositories.CommentRepository;
 import com.thoughtworks.TWMDBweb.repositories.MovieRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpMethod;
@@ -10,7 +12,10 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 import org.springframework.web.client.RestTemplate;
 
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.HashSet;
 import java.util.List;
 
@@ -20,10 +25,13 @@ public class MovieService {
     @Autowired
     private final MovieRepository movieRepository;
     @Autowired
+    private final CommentRepository commentRepository;
+    @Autowired
     private RestTemplate restTemplate;
 
-    public MovieService(MovieRepository movieRepository, RestTemplate restTemplate) {
+    public MovieService(MovieRepository movieRepository, CommentRepository commentRepository, RestTemplate restTemplate) {
         this.movieRepository = movieRepository;
+        this.commentRepository = commentRepository;
         this.restTemplate = restTemplate;
     }
 
@@ -104,6 +112,28 @@ public class MovieService {
             JSONObject images = JSONObject.parseObject(detail.getString("images"));
             String image = images.getString("small");
             movieRepository.updatePicture(image, id);
+        }
+    }
+
+    public void addCommentsToTable() throws ParseException {
+        List<Integer> idList = movieRepository.getMoviesId();
+        for (int id : idList) {
+            String urlComments = "http://api.douban.com/v2/movie/subject/" + id + "/comments?start=1&count=5&" + API_KEY;
+            ResponseEntity<String> commentsRes = restTemplate.exchange(urlComments, HttpMethod.GET, null, String.class);
+            JSONObject commentJson = JSONObject.parseObject(commentsRes.getBody());
+            JSONArray commentsArr = JSONArray.parseArray(commentJson.getString("comments"));
+            JSONObject obj = new JSONObject();
+            for (int i = 0; i < commentsArr.size(); i++) {
+                obj = commentsArr.getJSONObject(i);
+                JSONObject author = JSONObject.parseObject(obj.getString("author"));
+                String authorName = author.getString("name");
+                JSONObject ratings = JSONObject.parseObject(obj.getString("rating"));
+                double rating = Double.parseDouble(ratings.getString("value"));
+                SimpleDateFormat format = new SimpleDateFormat("yyyy-MM-dd");
+                Date commentDate = format.parse(obj.getString("created_at"));
+                String comments = obj.getString("content");
+                commentRepository.insertComments(id, authorName, rating, commentDate, comments);
+            }
         }
     }
 
