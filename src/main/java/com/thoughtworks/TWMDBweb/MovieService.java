@@ -49,18 +49,22 @@ public class MovieService {
     }
 
     public List<Movie> getMoviesForCategory(String category, int start, int end) {
-        return movieRepository.getMoviesForCategory(category, start-1, end-start+1);
+        return movieRepository.getMoviesForCategory(category, start - 1, end - start + 1);
     }
 
     public List<Movie> searchMoviesForInput(String text) {
         return movieRepository.searchMoviesForInput(text);
     }
 
-    //根据电影id返回单个电影详情信息
+    public Movie getMovieDetailById(String movieId) {
+//        addSummaryToTable();
+        return movieRepository.getMovieDetailById(movieId);
+    }
+
     public void addSummaryToTable() {
         List<Integer> idList = movieRepository.getMoviesId();
         for (int id : idList) {
-            String url="http://api.douban.com/v2/movie/subject/" + id  + API_KEY;
+            String url = "http://api.douban.com/v2/movie/subject/" + id + API_KEY;
             ResponseEntity<String> results = restTemplate.exchange(url, HttpMethod.GET, null, String.class);
             String json = results.getBody();
             JSONObject detail = JSONObject.parseObject(json);

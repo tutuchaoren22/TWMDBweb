@@ -7,7 +7,6 @@ import org.springframework.data.repository.query.Param;
 
 import java.util.List;
 
-
 public interface MovieRepository extends CrudRepository<Movie, Integer> {
 
     @Query("SELECT * FROM movies WHERE id BETWEEN :start AND :end")
@@ -25,4 +24,7 @@ public interface MovieRepository extends CrudRepository<Movie, Integer> {
     @Modifying
     @Query("UPDATE movies SET summary=:summary WHERE movie_id=:id")
     void insertSummary(@Param("summary") String summary, @Param("id") Integer id);
+
+    @Query("SELECT * FROM movies WHERE movie_id=:movieId")
+    Movie getMovieDetailById(@Param("movieId") String movieId);
 }
