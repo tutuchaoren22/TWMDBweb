@@ -18,6 +18,9 @@ public interface MovieRepository extends CrudRepository<Movie, Integer> {
     @Query("select * from movies where title LIKE CONCAT('%',:text,'%') ")
     List<Movie> searchMoviesForInput(@Param("text") String text);
 
+    @Query("SELECT * FROM movies WHERE movie_id=:movieId")
+    Movie getMovieDetailById(@Param("movieId") String movieId);
+
     @Query("SELECT movie_id FROM movies")
     List<Integer> getMoviesId();
 
@@ -25,6 +28,11 @@ public interface MovieRepository extends CrudRepository<Movie, Integer> {
     @Query("UPDATE movies SET summary=:summary WHERE movie_id=:id")
     void insertSummary(@Param("summary") String summary, @Param("id") Integer id);
 
-    @Query("SELECT * FROM movies WHERE movie_id=:movieId")
-    Movie getMovieDetailById(@Param("movieId") String movieId);
+    @Modifying
+    @Query("UPDATE movies SET durations=:durations WHERE movie_id=:id")
+    void insertDurations(@Param("durations") String durations, @Param("id") Integer id);
+
+    @Modifying
+    @Query("UPDATE movies SET image=:image WHERE movie_id=:id")
+    void updatePicture(@Param("image") String image, @Param("id") Integer id);
 }

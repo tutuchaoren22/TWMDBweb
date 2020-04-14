@@ -38,4 +38,13 @@ public class MovieController {
     public Movie getMovieDetailById(@PathParam("movieId") String movieId) {
         return movieService.getMovieDetailById(movieId);
     }
+
+    @GetMapping("/update")
+    public void updateTable() {
+        movieService.addSummaryToTable();
+        movieService.addDurations();
+        movieService.updateMoviePic();
+    }
+
+
 }

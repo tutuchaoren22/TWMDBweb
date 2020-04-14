@@ -57,7 +57,6 @@ public class MovieService {
     }
 
     public Movie getMovieDetailById(String movieId) {
-//        addSummaryToTable();
         return movieRepository.getMovieDetailById(movieId);
     }
 
@@ -73,5 +72,29 @@ public class MovieService {
         }
     }
 
+    public void addDurations(){
+        List<Integer> idList = movieRepository.getMoviesId();
+        for (int id : idList) {
+            String url = "http://api.douban.com/v2/movie/subject/" + id + API_KEY;
+            ResponseEntity<String> results = restTemplate.exchange(url, HttpMethod.GET, null, String.class);
+            String json = results.getBody();
+            JSONObject detail = JSONObject.parseObject(json);
+            String durations = detail.getString("durations");
+            movieRepository.insertDurations(durations, id);
+        }
+    }
+
+    public void updateMoviePic(){
+        List<Integer> idList = movieRepository.getMoviesId();
+        for (int id : idList) {
+            String url = "http://api.douban.com/v2/movie/subject/" + id + API_KEY;
+            ResponseEntity<String> results = restTemplate.exchange(url, HttpMethod.GET, null, String.class);
+            String json = results.getBody();
+            JSONObject detail = JSONObject.parseObject(json);
+            JSONObject images = JSONObject.parseObject(detail.getString("images"));
+            String image = images.getString("small");
+            movieRepository.updatePicture(image, id);
+        }
+    }
 
 }
