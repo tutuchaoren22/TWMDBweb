@@ -5,12 +5,12 @@ searchProject(inputToSearch);
 
 function searchProject(data) {
   let inputValue = document.getElementById("search-movie").value || data;
-  inputValue = (inputValue === undefined) ? ' ' : inputValue;
+  inputValue = (inputValue === undefined) ? '' : inputValue;
   if (0 !== inputValue.length) {
     content.innerHTML = `<h2>搜索：${inputValue}</h2>`;
     // let searchMovieId = itemSearch(movieDb, inputValue);
     getMoviesByName(inputValue).then(searchResult => {
-      if (inputValue && searchResult.length !== 0) {
+      if (searchResult.length !== 0) {
         searchResult.forEach(item => {
           content.innerHTML += `<div class="searchResult">
             <div class="picAndDetail">
