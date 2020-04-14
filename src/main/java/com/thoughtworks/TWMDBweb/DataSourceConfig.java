@@ -31,8 +31,8 @@ public class DataSourceConfig {
     @Bean
     public ClientHttpRequestFactory simpleClientHttpRequestFactory(){
         SimpleClientHttpRequestFactory factory = new SimpleClientHttpRequestFactory();
-        factory.setConnectTimeout(15000);
-        factory.setReadTimeout(5000);
+        factory.setConnectTimeout(30000);
+        factory.setReadTimeout(30000);
         return factory;
     }
 }
