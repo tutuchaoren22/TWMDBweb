@@ -1,5 +1,5 @@
-let dataLoadedFlag = false;
-// let movieCollectToEnd = false;
+let isDataLoaded = false;
+let isAllDataCollected = false;
 let movieListToRender;
 let currentCategory = 'all';
 let movieCollectProgressIndex = 1;
@@ -15,7 +15,7 @@ function run() {
   getAllMoviesBetween(movieCollectProgressIndex, (movieCollectProgressIndex += movieCollectInitLength) - 1).then(movieList => {
     movieListToRender = movieList;
     renderMovieListInInterval(movieListToRender, movieRenderProgressIndex, (movieRenderProgressIndex += movieRenderInterval) - 1);
-    dataLoadedFlag = true;
+    isDataLoaded = true;
   });
 }
 
@@ -63,7 +63,8 @@ function findCatagoryBox(target) {
 }
 
 function selectCatagoryHandle(catagoryBoxEl) {
-  dataLoadedFlag = false;
+  isDataLoaded = false;
+  isAllDataCollected = false;
   currentCategory = catagoryBoxEl.firstElementChild.textContent;
   highlightCatagoryBox(catagoryBoxEl);
   removeMovies();
@@ -71,7 +72,7 @@ function selectCatagoryHandle(catagoryBoxEl) {
   movieCollectProgressIndex = 1;
   getMoviesOfCategory(currentCategory, movieCollectProgressIndex, (movieCollectProgressIndex + movieCollectInitLength) - 1).then(result => {
     movieListToRender = result;
-    dataLoadedFlag = true;
+    isDataLoaded = true;
     renderMovieListInInterval(movieListToRender, movieRenderProgressIndex, (movieRenderProgressIndex += movieRenderInterval) - 1);
   });
 }
@@ -183,7 +184,7 @@ function getScrollHeight() {
 
 
 window.onscroll = function () {
-  if (dataLoadedFlag) {
+  if (isDataLoaded && (!isAllDataCollected)) {
     if (getScrollHeight() < getWindowHeight() + getDocumentTop() + 15) {
       let loadmore = document.getElementsByClassName('loadmore')[0];
       loadmore.innerHTML = '<span class="loading"></span>加载中..';
@@ -212,8 +213,8 @@ function keyEnterSearchProject() {
 
 function searchProject() {
   let inputValue = document.getElementById("search-movie").value;
-  if(null !== inputValue && inputValue.length)
-  window.open(`../pages/searchPage.html?${inputValue}`, '_blank');
+  if (null !== inputValue && inputValue.length)
+    window.open(`../pages/searchPage.html?${inputValue}`, '_blank');
 }
 
 function getCatagories() {
@@ -235,6 +236,7 @@ function getAllMoviesBetween(start, end) {
       url: 'http://localhost:8080/api/all?start=' + start + '&end=' + end,
       method: 'GET',
       success: function (result) {
+        checkIsAllDataCollected(result.length, end - start + 1)
         resolve(result);
       }
     };
@@ -248,9 +250,16 @@ function getMoviesOfCategory(category, start, end) {
       url: 'http://localhost:8080/api/category?category=' + category + '&start=' + start + '&end=' + end,
       method: 'GET',
       success: function (result) {
+        checkIsAllDataCollected(result.length, end - start + 1)
         resolve(result);
       }
     };
     AJAXHandle(AJAXSetup);
   });
+}
+
+function checkIsAllDataCollected(lengthReceived, lengthRequired) {
+  if (lengthReceived < lengthRequired) {
+    isAllDataCollected = true;
+  }
 }
