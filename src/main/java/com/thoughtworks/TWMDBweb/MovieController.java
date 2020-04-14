@@ -35,7 +35,7 @@ public class MovieController {
     }
 
     @GetMapping("/movie")
-    public void getMovieForId(@PathParam("id") String id) {
-
+    public void getMoviesDetailById() {
+        movieService.addSummaryToTable();
     }
 }

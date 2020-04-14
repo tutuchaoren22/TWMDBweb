@@ -1,5 +1,6 @@
 package com.thoughtworks.TWMDBweb;
 
+import org.springframework.data.jdbc.repository.query.Modifying;
 import org.springframework.data.jdbc.repository.query.Query;
 import org.springframework.data.repository.CrudRepository;
 import org.springframework.data.repository.query.Param;
@@ -18,8 +19,10 @@ public interface MovieRepository extends CrudRepository<Movie, Integer> {
     @Query("select * from movies where title LIKE CONCAT('%',:text,'%') ")
     List<Movie> searchMoviesForInput(@Param("text") String text);
 
-/*    //根据电影id返回单个电影详情信息
-    @Query("")
-    void getMovieForId(String id);*/
+    @Query("SELECT movie_id FROM movies")
+    List<Integer> getMoviesId();
 
+    @Modifying
+    @Query("UPDATE movies SET summary=:summary WHERE movie_id=:id")
+    void insertSummary(@Param("summary") String summary, @Param("id") Integer id);
 }

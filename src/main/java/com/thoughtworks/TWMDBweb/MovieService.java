@@ -1,13 +1,22 @@
 package com.thoughtworks.TWMDBweb;
 
+import com.alibaba.fastjson.JSONObject;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpMethod;
+import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
+import org.springframework.web.client.RestTemplate;
 
 import java.util.ArrayList;
 import java.util.List;
 
 @Service
 public class MovieService {
+    String API_KEY = "?apikey=0df993c66c0c636e29ecbb5344252a4a";
+    @Autowired
     private final MovieRepository movieRepository;
+    @Autowired
+    private RestTemplate restTemplate;
 
     public MovieService(MovieRepository movieRepository) {
         this.movieRepository = movieRepository;
@@ -48,8 +57,16 @@ public class MovieService {
     }
 
     //根据电影id返回单个电影详情信息
-    public void getMovieForId(String id) {
-
+    public void addSummaryToTable() {
+        List<Integer> idList = movieRepository.getMoviesId();
+        for (int id : idList) {
+            String url="http://api.douban.com/v2/movie/subject/" + id  + API_KEY;
+            ResponseEntity<String> results = restTemplate.exchange(url, HttpMethod.GET, null, String.class);
+            String json = results.getBody();
+            JSONObject detail = JSONObject.parseObject(json);
+            String summary = detail.getString("summary");
+            movieRepository.insertSummary(summary, id);
+        }
     }
 
 
