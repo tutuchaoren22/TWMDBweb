@@ -1,5 +1,6 @@
 let isDataLoaded = false;
 let isAllDataCollected = false;
+// let isLoadingDisplaying = false;
 let movieListToRender;
 let currentCategory = 'all';
 let movieCollectProgressIndex = 1;
@@ -79,6 +80,7 @@ function selectCatagoryHandle(catagoryBoxEl) {
     isDataLoaded = true;
     renderMovieListInInterval(movieListToRender, movieRenderProgressIndex, (movieRenderProgressIndex + movieRenderInterval) - 1);
     movieRenderProgressIndex += movieRenderInterval;
+    window.scrollTo(0, window.innerWidth * 0.3 + 60);
   });
 }
 
@@ -189,12 +191,14 @@ function getScrollHeight() {
 
 
 window.onscroll = function () {
-  if (isDataLoaded && (movieRenderProgressIndex < movieCollectProgressIndex)) {
-    if (getScrollHeight() < getWindowHeight() + getDocumentTop() + 15) {
-      let loadmore = document.getElementsByClassName('loadmore')[0];
-      loadmore.innerHTML = '<span class="loading"></span>加载中..';
-      if (getScrollHeight() - 1 <= getWindowHeight() + getDocumentTop()) {
-        loadmore.innerHTML = ' ';
+  if (getScrollHeight() < getWindowHeight() + getDocumentTop() + 15) {
+    let loadmore = document.getElementsByClassName('loadmore')[0];
+    loadmore.innerHTML = '<span class="loading"></span>加载中..';
+    if (getScrollHeight() - 1 <= getWindowHeight() + getDocumentTop()) {
+      loadmore.innerHTML = ' ';
+    }
+    if (isDataLoaded && (movieRenderProgressIndex < movieCollectProgressIndex)) {
+      if (!isAllDataCollected) {
         if ('all' == currentCategory) {
           getAllMoviesBetween(movieCollectProgressIndex, (movieCollectProgressIndex + movieRenderInterval) - 1).then(movieList => {
             checkIsAllDataCollected(movieList.length, movieRenderInterval);
@@ -208,9 +212,9 @@ window.onscroll = function () {
             movieListToRender = movieListToRender.concat(movieList);
           });
         }
-        renderMovieListInInterval(movieListToRender, movieRenderProgressIndex, (movieRenderProgressIndex + movieRenderInterval) - 1);
-        movieRenderProgressIndex += movieRenderInterval;
       }
+      renderMovieListInInterval(movieListToRender, movieRenderProgressIndex, (movieRenderProgressIndex + movieRenderInterval) - 1);
+      movieRenderProgressIndex += movieRenderInterval;
     }
   }
 };
@@ -270,8 +274,4 @@ function checkIsAllDataCollected(lengthReceived, lengthRequired) {
   if (lengthReceived < lengthRequired) {
     isAllDataCollected = true;
   }
-}
-
-function checkIsAllDataRendered(le) {
-
 }
