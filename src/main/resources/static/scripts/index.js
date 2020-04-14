@@ -5,6 +5,7 @@ let pastHighlightCatagoryBox;
 let movieListToRender;
 let movieRenderProgressIndex = 1;
 const movieRenderInterval = 20;
+const movieRenderInitialLength = 40;
 
 
 // initDb(() => {
@@ -19,7 +20,12 @@ const movieRenderInterval = 20;
 run();
 
 function run() {
-  getCatagories().then((result) => renderAllCategorys(result));
+  getCatagories().then(result => renderAllCategorys(result));
+  getAllMoviesBetween(1, 1 + movieRenderInitialLength - 1).then(movieList => {
+    movieListToRender = movieList;
+    renderMovieListInInterval(movieListToRender, movieRenderProgressIndex, movieRenderProgressIndex + movieRenderInterval - 1);
+  });
+
 }
 
 function onInterfaceClick(event) {
@@ -101,12 +107,12 @@ function removeMovies() {
   }
 }
 
-function renderMovieListInInterval(idList, start, end) {
+function renderMovieListInInterval(movieList, start, end) {
   let renderStart = start || 1;
-  let renderEnd = end || idList.length;
+  let renderEnd = end || movieList.length;
   let movieGallaryEl = document.getElementsByClassName("movie-gallary")[0];
-  idList.slice(renderStart - 1, renderEnd).forEach((id) => {
-    movieGallaryEl.appendChild(renderSingleMovie(getDataById(movieDb, id)));
+  movieList.slice(renderStart - 1, renderEnd).forEach(movie => {
+    movieGallaryEl.appendChild(renderSingleMovie(movie));
   })
 }
 
@@ -114,15 +120,15 @@ function renderSingleMovie(movieObj) {
   let movieEl = document.createElement('div');
   movieEl.innerHTML = `
   <div class="movie-box">
-    <a href="../pages/detailPage.html?${movieObj.id}" target="_blank">
+    <a href="../pages/detailPage.html?${movieObj.movieId}" target="_blank">
       <div class="img-wrap">
-        <img src=${movieObj.images.small}>
+        <img src=${movieObj.image}>
       </div>
       <div class="movie-title">${movieObj.title}</div>
     </a>
     <div class="movie-year">(${movieObj.year})</div>
     <div>
-      <span class="rating-star">★</span><span class="movie-rating">${movieObj.rating.average.toFixed(1)}</span>
+      <span class="rating-star">★</span><span class="movie-rating">${movieObj.rating.toFixed(1)}</span>
     </div>
   </div>`;
   return movieEl;
@@ -221,6 +227,20 @@ function getCatagories() {
   return new Promise(function (resolve, reject) {
     let AJAXSetup = {
       url: 'http://localhost:8080/api/allcategories',
+      method: 'GET',
+      success: function (result) {
+        resolve(result);
+      }
+    };
+    AJAXHandle(AJAXSetup);
+  });
+}
+
+function getAllMoviesBetween(start, end) {
+  return new Promise(function (resolve, reject) {
+    let BASIC_URL = 'http://127.0.0.1:8888';
+    let AJAXSetup = {
+      url: 'http://localhost:8080/api/all?start=' + start + '&end=' + end,
       method: 'GET',
       success: function (result) {
         resolve(result);
