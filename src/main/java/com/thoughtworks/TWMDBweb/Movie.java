@@ -136,20 +136,4 @@ public class Movie {
         this.summary = summary;
     }
 
-    @Override
-    public String toString() {
-        return "Movie{" +
-                "id=" + id +
-                ", movieId='" + movieId + '\'' +
-                ", alt='" + alt + '\'' +
-                ", year=" + year +
-                ", title='" + title + '\'' +
-                ", rating=" + rating +
-                ", originalTitle='" + originalTitle + '\'' +
-                ", directors='" + directors + '\'' +
-                ", casts='" + casts + '\'' +
-                ", genres='" + genres + '\'' +
-                ", image='" + image + '\'' +
-                '}';
-    }
 }
