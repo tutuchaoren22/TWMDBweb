@@ -3,10 +3,11 @@ let movieDb;
 let dataLoadedflag = false;
 let pastHighlightCatagoryBox;
 let movieListToRender;
+let movieCollectProgressIndex = 1;
 let movieRenderProgressIndex = 1;
 const movieRenderInterval = 20;
-const movieRenderInitialLength = 40;
-
+const movieCollectInitLength = 40;
+let currentCategory = 'all';
 
 // initDb(() => {
 //   classificationDb = readDbClassification();
@@ -21,9 +22,10 @@ run();
 
 function run() {
   getCatagories().then(result => renderAllCategorys(result));
-  getAllMoviesBetween(1, 1 + movieRenderInitialLength - 1).then(movieList => {
+  getAllMoviesBetween(movieCollectProgressIndex, (movieCollectProgressIndex += movieCollectInitLength) - 1).then(movieList => {
     movieListToRender = movieList;
-    renderMovieListInInterval(movieListToRender, movieRenderProgressIndex, movieRenderProgressIndex + movieRenderInterval - 1);
+    renderMovieListInInterval(movieListToRender, movieRenderProgressIndex, (movieRenderProgressIndex += movieRenderInterval) - 1);
+    dataLoadedflag = true;
   });
 
 }
@@ -85,7 +87,7 @@ function selectCatagoryHandle(catagoryBoxEl) {
   removeMovies();
   movieRenderProgressIndex = 1;
   movieListToRender = findMoviesOfCatagory(classificationDb, catagorySelected);
-  renderMovieListInInterval(movieListToRender, movieRenderProgressIndex, movieRenderProgressIndex + movieRenderInterval - 1);
+  renderMovieListInInterval(movieListToRender, movieRenderProgressIndex, (movieRenderProgressIndex += movieRenderInterval) - 1);
 }
 
 function sortCatagoryByMovieCount(catagoryObjList) {
@@ -205,8 +207,13 @@ window.onscroll = function () {
       loadmore.innerHTML = '<span class="loading"></span>加载中..';
       if (getScrollHeight() - 1 <= getWindowHeight() + getDocumentTop()) {
         loadmore.innerHTML = ' ';
-        movieRenderProgressIndex += movieRenderInterval;
-        renderMovieListInInterval(movieListToRender, movieRenderProgressIndex, movieRenderProgressIndex + movieRenderInterval - 1);
+        if ('all' == currentCategory) {
+          console.log("here!");
+          getAllMoviesBetween(movieCollectProgressIndex, (movieCollectProgressIndex += movieRenderInterval) - 1).then(movieList => {
+            movieListToRender = movieListToRender.concat(movieList);
+          });
+        }
+        renderMovieListInInterval(movieListToRender, movieRenderProgressIndex, (movieRenderProgressIndex += movieRenderInterval) - 1);
       }
     }
   }
@@ -238,7 +245,6 @@ function getCatagories() {
 
 function getAllMoviesBetween(start, end) {
   return new Promise(function (resolve, reject) {
-    let BASIC_URL = 'http://127.0.0.1:8888';
     let AJAXSetup = {
       url: 'http://localhost:8080/api/all?start=' + start + '&end=' + end,
       method: 'GET',
