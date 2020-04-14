@@ -1,5 +1,6 @@
 let isDataLoaded = false;
 let isAllDataCollected = false;
+// let isLoadingDisplaying = false;
 let movieListToRender;
 let currentCategory = 'all';
 let movieCollectProgressIndex = 1;
@@ -12,9 +13,11 @@ run();
 
 function run() {
   getCatagories().then(result => renderAllCategroys(result));
-  getAllMoviesBetween(movieCollectProgressIndex, (movieCollectProgressIndex += movieCollectInitLength) - 1).then(movieList => {
+  getAllMoviesBetween(movieCollectProgressIndex, (movieCollectProgressIndex + movieCollectInitLength) - 1).then(movieList => {
     movieListToRender = movieList;
-    renderMovieListInInterval(movieListToRender, movieRenderProgressIndex, (movieRenderProgressIndex += movieRenderInterval) - 1);
+    movieCollectProgressIndex = movieCollectProgressIndex + movieList.length;
+    renderMovieListInInterval(movieListToRender, movieRenderProgressIndex, (movieRenderProgressIndex + movieRenderInterval) - 1);
+    movieRenderProgressIndex += movieRenderInterval;
     isDataLoaded = true;
   });
 }
@@ -65,15 +68,19 @@ function findCatagoryBox(target) {
 function selectCatagoryHandle(catagoryBoxEl) {
   isDataLoaded = false;
   isAllDataCollected = false;
+  movieCollectProgressIndex = 1;
+  movieRenderProgressIndex = 1;
   currentCategory = catagoryBoxEl.firstElementChild.textContent;
   highlightCatagoryBox(catagoryBoxEl);
   removeMovies();
-  movieRenderProgressIndex = 1;
-  movieCollectProgressIndex = 1;
   getMoviesOfCategory(currentCategory, movieCollectProgressIndex, (movieCollectProgressIndex + movieCollectInitLength) - 1).then(result => {
     movieListToRender = result;
+    checkIsAllDataCollected(result.length, movieCollectInitLength);
+    movieCollectProgressIndex += result.length;
     isDataLoaded = true;
-    renderMovieListInInterval(movieListToRender, movieRenderProgressIndex, (movieRenderProgressIndex += movieRenderInterval) - 1);
+    renderMovieListInInterval(movieListToRender, movieRenderProgressIndex, (movieRenderProgressIndex + movieRenderInterval) - 1);
+    movieRenderProgressIndex += movieRenderInterval;
+    window.scrollTo(0, window.innerWidth * 0.3 + 60);
   });
 }
 
@@ -98,7 +105,7 @@ function removeMovies() {
 
 function renderMovieListInInterval(movieList, start, end) {
   let renderStart = start || 1;
-  let renderEnd = end || movieList.length;
+  let renderEnd = Math.min(end, movieList.length);
   let movieGallaryEl = document.getElementsByClassName("movie-gallary")[0];
   movieList.slice(renderStart - 1, renderEnd).forEach(movie => {
     movieGallaryEl.appendChild(renderSingleMovie(movie));
@@ -184,23 +191,30 @@ function getScrollHeight() {
 
 
 window.onscroll = function () {
-  if (isDataLoaded && (!isAllDataCollected)) {
-    if (getScrollHeight() < getWindowHeight() + getDocumentTop() + 15) {
-      let loadmore = document.getElementsByClassName('loadmore')[0];
-      loadmore.innerHTML = '<span class="loading"></span>加载中..';
-      if (getScrollHeight() - 1 <= getWindowHeight() + getDocumentTop()) {
-        loadmore.innerHTML = ' ';
+  if (getScrollHeight() < getWindowHeight() + getDocumentTop() + 15) {
+    let loadmore = document.getElementsByClassName('loadmore')[0];
+    loadmore.innerHTML = '<span class="loading"></span>加载中..';
+    if (getScrollHeight() - 1 <= getWindowHeight() + getDocumentTop()) {
+      loadmore.innerHTML = ' ';
+    }
+    if (isDataLoaded && (movieRenderProgressIndex < movieCollectProgressIndex)) {
+      if (!isAllDataCollected) {
         if ('all' == currentCategory) {
-          getAllMoviesBetween(movieCollectProgressIndex, (movieCollectProgressIndex += movieRenderInterval) - 1).then(movieList => {
+          getAllMoviesBetween(movieCollectProgressIndex, (movieCollectProgressIndex + movieRenderInterval) - 1).then(movieList => {
+            checkIsAllDataCollected(movieList.length, movieRenderInterval);
+            movieCollectProgressIndex += movieList.length;
             movieListToRender = movieListToRender.concat(movieList);
           });
         } else {
-          getMoviesOfCategory(currentCategory, movieCollectProgressIndex, (movieCollectProgressIndex += movieRenderInterval) - 1).then(movieList => {
+          getMoviesOfCategory(currentCategory, movieCollectProgressIndex, (movieCollectProgressIndex + movieRenderInterval) - 1).then(movieList => {
+            checkIsAllDataCollected(movieList.length, movieRenderInterval);
+            movieCollectProgressIndex += movieList.length;
             movieListToRender = movieListToRender.concat(movieList);
           });
         }
-        renderMovieListInInterval(movieListToRender, movieRenderProgressIndex, (movieRenderProgressIndex += movieRenderInterval) - 1);
       }
+      renderMovieListInInterval(movieListToRender, movieRenderProgressIndex, (movieRenderProgressIndex + movieRenderInterval) - 1);
+      movieRenderProgressIndex += movieRenderInterval;
     }
   }
 };
@@ -236,7 +250,6 @@ function getAllMoviesBetween(start, end) {
       url: 'http://localhost:8080/api/all?start=' + start + '&end=' + end,
       method: 'GET',
       success: function (result) {
-        checkIsAllDataCollected(result.length, end - start + 1)
         resolve(result);
       }
     };
@@ -250,7 +263,6 @@ function getMoviesOfCategory(category, start, end) {
       url: 'http://localhost:8080/api/category?category=' + category + '&start=' + start + '&end=' + end,
       method: 'GET',
       success: function (result) {
-        checkIsAllDataCollected(result.length, end - start + 1)
         resolve(result);
       }
     };
