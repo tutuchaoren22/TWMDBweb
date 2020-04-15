@@ -191,11 +191,13 @@ function getScrollHeight() {
 
 
 window.onscroll = function () {
-  if (getScrollHeight() < getWindowHeight() + getDocumentTop() + 15) {
+  if ((getScrollHeight() < getWindowHeight() + getDocumentTop() + 15)) {
     let loadmore = document.getElementsByClassName('loadmore')[0];
-    loadmore.innerHTML = '<span class="loading"></span>加载中..';
-    if (getScrollHeight() - 1 <= getWindowHeight() + getDocumentTop()) {
-      loadmore.innerHTML = ' ';
+    if (movieRenderProgressIndex < movieCollectProgressIndex) {
+      loadmore.innerHTML = '<span class="loading"></span>加载中..';
+    }
+    if ((getScrollHeight() - 1 <= getWindowHeight() + getDocumentTop()) || ((movieRenderProgressIndex >= movieCollectProgressIndex))) {
+      loadmore.innerHTML = '';
     }
     if (isDataLoaded && (movieRenderProgressIndex < movieCollectProgressIndex)) {
       if (!isAllDataCollected) {
