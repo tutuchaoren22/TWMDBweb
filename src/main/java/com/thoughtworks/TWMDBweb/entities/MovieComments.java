@@ -17,16 +17,18 @@ public class MovieComments {
     private double rating;
     @Column("comment_date")
     private Date commentDate;
+    private String comments;
 
     public MovieComments() {
     }
 
-    public MovieComments(int id, int movieId, String authorName, double rating, Date commentDate) {
+    public MovieComments(int id, int movieId, String authorName, double rating, Date commentDate, String comments) {
         this.id = id;
         this.movieId = movieId;
         this.authorName = authorName;
         this.rating = rating;
         this.commentDate = commentDate;
+        this.comments = comments;
     }
 
     public int getId() {
@@ -67,5 +69,13 @@ public class MovieComments {
 
     public void setCommentDate(Date commentDate) {
         this.commentDate = commentDate;
+    }
+
+    public String getComments() {
+        return comments;
+    }
+
+    public void setComments(String comments) {
+        this.comments = comments;
     }
 }
