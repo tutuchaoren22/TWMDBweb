@@ -18,7 +18,7 @@ CREATE TABLE movie_comments (
     rating DOUBLE,
     comment_date DATE,
     comments TEXT
-)  ENGINE=INNODB DEFAULT CHARSET=utf8;
+)  ENGINE=INNODB DEFAULT CHARSET=utf8mb4;
 
 SELECT
     *
