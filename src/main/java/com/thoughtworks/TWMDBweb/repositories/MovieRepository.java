@@ -1,5 +1,7 @@
 package com.thoughtworks.TWMDBweb.repositories;
 
+import com.alibaba.fastjson.JSONArray;
+import com.mysql.cj.xdevapi.JsonArray;
 import com.thoughtworks.TWMDBweb.entities.Movie;
 import org.springframework.data.jdbc.repository.query.Modifying;
 import org.springframework.data.jdbc.repository.query.Query;
@@ -32,6 +34,10 @@ public interface MovieRepository extends CrudRepository<Movie, Integer> {
     @Modifying
     @Query("UPDATE movies SET durations=:durations WHERE movie_id=:id")
     void insertDurations(@Param("durations") String durations, @Param("id") Integer id);
+
+    @Modifying
+    @Query("UPDATE movies SET countries=:countries WHERE movie_id=:id")
+    void insertCountries(@Param("countries") String countries, @Param("id") Integer id);
 
     @Modifying
     @Query("UPDATE movies SET image=:image WHERE movie_id=:id")

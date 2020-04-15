@@ -94,6 +94,18 @@ public class MovieService {
         }
     }
 
+    public void addCountries() {
+        List<Integer> idList = movieRepository.getMoviesId();
+        for (int id : idList) {
+            String url = "http://api.douban.com/v2/movie/subject/" + id + "?" + API_KEY;
+            ResponseEntity<String> results = restTemplate.exchange(url, HttpMethod.GET, null, String.class);
+            String json = results.getBody();
+            JSONObject detail = JSONObject.parseObject(json);
+            String countries = detail.getString("countries");
+            movieRepository.insertCountries(countries, id);
+        }
+    }
+
     public void updateMoviePic() {
         List<Integer> idList = movieRepository.getMoviesId();
         for (int id : idList) {
