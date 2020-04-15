@@ -12,7 +12,7 @@ let imgSrcArr = ["../img/1.jpg",
   "../img/3.jpg",
   "../img/4.jpg",
   "../img/5.jpg"];
-let imgIdArr = [1851857, 1292213, 11525673, 26325320, 1293182];
+let imgIdArr = [1851857, 1292213, 11525673, 1291572, 1293182];
 let timer;
 
 function autoPlay() {
