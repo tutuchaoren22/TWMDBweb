@@ -5,6 +5,7 @@ import com.alibaba.fastjson.JSONObject;
 import com.thoughtworks.TWMDBweb.entities.Movie;
 import com.thoughtworks.TWMDBweb.entities.MovieCategories;
 import com.thoughtworks.TWMDBweb.entities.MovieComments;
+import com.thoughtworks.TWMDBweb.repositories.CategoryRepository;
 import com.thoughtworks.TWMDBweb.repositories.CommentRepository;
 import com.thoughtworks.TWMDBweb.repositories.MovieRepository;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -28,11 +29,14 @@ public class MovieService {
     @Autowired
     private final CommentRepository commentRepository;
     @Autowired
+    private final CategoryRepository categoryRepository;
+    @Autowired
     private RestTemplate restTemplate;
 
-    public MovieService(MovieRepository movieRepository, CommentRepository commentRepository, RestTemplate restTemplate) {
+    public MovieService(MovieRepository movieRepository, CommentRepository commentRepository, CategoryRepository categoryRepository, RestTemplate restTemplate) {
         this.movieRepository = movieRepository;
         this.commentRepository = commentRepository;
+        this.categoryRepository = categoryRepository;
         this.restTemplate = restTemplate;
     }
 
@@ -40,26 +44,9 @@ public class MovieService {
         return movieRepository.getAllMovies(start, end);
     }
 
-    public List<MovieCategories> getAllClassifiedMovies() {
-        List<String> allCategories = getAllCategories();
-        List<MovieCategories> allClassifiedMovies = new ArrayList<>();
-        for (String category : allCategories) {
-            allClassifiedMovies.add(new MovieCategories(category, getMoviesForCategory(category, 1, 250).size()));
-        }
-        return allClassifiedMovies;
-    }
 
-    public List<String> getAllCategories() {
-        List<Movie> allMovies = getAllMovies(1, 250);
-        List<String> allCategories = new ArrayList<>();
-        for (Movie movie : allMovies) {
-            for (String genre : movie.getGenres().split(",")) {
-                if (!allCategories.contains(genre)) {
-                    allCategories.add(genre);
-                }
-            }
-        }
-        return allCategories;
+    public List<MovieCategories> getAllCategoriesFromDb() {
+        return categoryRepository.getAllCategories();
     }
 
     public List<Movie> getMoviesForCategory(String category, int start, int end) {
@@ -95,7 +82,7 @@ public class MovieService {
         }
     }
 
-    public void addDurations(){
+    public void addDurations() {
         List<Integer> idList = movieRepository.getMoviesId();
         for (int id : idList) {
             String url = "http://api.douban.com/v2/movie/subject/" + id + "?" + API_KEY;
@@ -107,7 +94,7 @@ public class MovieService {
         }
     }
 
-    public void updateMoviePic(){
+    public void updateMoviePic() {
         List<Integer> idList = movieRepository.getMoviesId();
         for (int id : idList) {
             String url = "http://api.douban.com/v2/movie/subject/" + id + "?" + API_KEY;
@@ -141,4 +128,35 @@ public class MovieService {
             }
         }
     }
+
+    public void addMovieCategories() {
+        List<MovieCategories> allClassifiedMovies = getAllMovieCategories();
+        for (MovieCategories movieCategories : allClassifiedMovies) {
+            categoryRepository.insertMovieCategory(movieCategories.getName(), movieCategories.getCount());
+        }
+    }
+
+    public List<MovieCategories> getAllMovieCategories() {
+        List<String> allCategories = getAllCategories();
+        List<MovieCategories> allClassifiedMovies = new ArrayList<>();
+        for (String category : allCategories) {
+            allClassifiedMovies.add(new MovieCategories(category, getMoviesForCategory(category, 1, 250).size()));
+        }
+        return allClassifiedMovies;
+    }
+
+    public List<String> getAllCategories() {
+        List<Movie> allMovies = getAllMovies(1, 250);
+        List<String> allCategories = new ArrayList<>();
+        for (Movie movie : allMovies) {
+            for (String genre : movie.getGenres().split(",")) {
+                if (!allCategories.contains(genre)) {
+                    allCategories.add(genre);
+                }
+            }
+        }
+        return allCategories;
+    }
+
+
 }

@@ -24,3 +24,14 @@ SELECT
     *
 FROM
     movie_comments;
+
+CREATE TABLE movie_categories (
+    id INT PRIMARY KEY AUTO_INCREMENT,
+    class_name VARCHAR(20),
+    class_count INT
+)  ENGINE=INNODB DEFAULT CHARSET=utf8;
+
+SELECT
+    *
+FROM
+    movie_categories;

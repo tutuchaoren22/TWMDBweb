@@ -25,8 +25,8 @@ public class MovieController {
     }
 
     @GetMapping("/allcategories")
-    public List<MovieCategories> getAllClassifiedMovies() {
-        return movieService.getAllClassifiedMovies();
+    public List<MovieCategories> getAllCategoriesFromDb() {
+        return movieService.getAllCategoriesFromDb();
     }
 
     @GetMapping("/category")
@@ -55,5 +55,6 @@ public class MovieController {
         movieService.addDurations();
         movieService.updateMoviePic();
         movieService.addCommentsToTable();
+        movieService.addMovieCategories();
     }
 }
