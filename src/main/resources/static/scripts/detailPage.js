@@ -34,8 +34,8 @@ function getMovieData() {
 }
 
 function loadMovieDetail(data) {
-  let movieCountries = '待补充！！！';
-
+  let movieCountries = data.countries.replace(/\"|\[|\]/g,'');
+  let movieDuration = data.durations.replace(/\"|\[|\]/g,'');
   movieInformations.innerHTML = `<h2>${data.title}——${data.originalTitle}</h2>
     <div class="picAndDetail">
     <img src="${data.image}" alt="电影海报图" />
@@ -45,7 +45,7 @@ function loadMovieDetail(data) {
     <p>类型：${data.genres}</p>
     <p>制片国家/地区：${movieCountries}</p>
     <p>上映日期：${data.year}</p>
-    <p>片长：${data.durations}</p>
+    <p>片长：${movieDuration}</p>
     <p>评分：${data.rating}</p></div></div>`;
   movieSummarys.innerHTML = `<h3>剧情简介</h3><p>${data.summary}</p>`;
   movieGenres = data.genres.split(',')[0];
