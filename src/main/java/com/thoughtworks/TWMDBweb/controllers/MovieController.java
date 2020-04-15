@@ -2,6 +2,7 @@ package com.thoughtworks.TWMDBweb.controllers;
 
 import com.thoughtworks.TWMDBweb.entities.Movie;
 import com.thoughtworks.TWMDBweb.entities.MovieCategories;
+import com.thoughtworks.TWMDBweb.entities.MovieComments;
 import com.thoughtworks.TWMDBweb.services.MovieService;
 import org.springframework.web.bind.annotation.*;
 
@@ -41,6 +42,11 @@ public class MovieController {
     @GetMapping("/movie")
     public Movie getMovieDetailById(@PathParam("movieId") String movieId) {
         return movieService.getMovieDetailById(movieId);
+    }
+
+    @GetMapping("/comments")
+    public List<MovieComments> getMovieCommentsById(@PathParam("movieId") String movieId) {
+        return movieService.getMovieCommentsById(movieId);
     }
 
     @GetMapping("/update")

@@ -4,6 +4,7 @@ import com.alibaba.fastjson.JSONArray;
 import com.alibaba.fastjson.JSONObject;
 import com.thoughtworks.TWMDBweb.entities.Movie;
 import com.thoughtworks.TWMDBweb.entities.MovieCategories;
+import com.thoughtworks.TWMDBweb.entities.MovieComments;
 import com.thoughtworks.TWMDBweb.repositories.CommentRepository;
 import com.thoughtworks.TWMDBweb.repositories.MovieRepository;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -78,6 +79,10 @@ public class MovieService {
         return movieRepository.getMovieDetailById(movieId);
     }
 
+    public List<MovieComments> getMovieCommentsById(String movieId) {
+        return commentRepository.getMovieCommentsById(movieId);
+    }
+
     public void addSummaryToTable() {
         List<Integer> idList = movieRepository.getMoviesId();
         for (int id : idList) {
@@ -122,7 +127,7 @@ public class MovieService {
             ResponseEntity<String> commentsRes = restTemplate.exchange(urlComments, HttpMethod.GET, null, String.class);
             JSONObject commentJson = JSONObject.parseObject(commentsRes.getBody());
             JSONArray commentsArr = JSONArray.parseArray(commentJson.getString("comments"));
-            JSONObject obj = new JSONObject();
+            JSONObject obj;
             for (int i = 0; i < commentsArr.size(); i++) {
                 obj = commentsArr.getJSONObject(i);
                 JSONObject author = JSONObject.parseObject(obj.getString("author"));
