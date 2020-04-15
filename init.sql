@@ -5,6 +5,7 @@ ALTER TABLE movies ADD id INT(5) NOT NULL
     PRIMARY KEY AUTO_INCREMENT FIRST;
 ALTER TABLE movies ADD summary LongTEXT;
 ALTER TABLE movies ADD durations TEXT;
+ALTER TABLE movies ADD countries VARCHAR(30);
 
 SELECT
     *
